@@ -1,0 +1,20 @@
+{
+  "devDependencies": {
+    "dotenv": "^17.4.2"
+  },
+  "dependencies": {
+    "docusaurus-plugin-typedoc": "^1.4.2",
+    "typedoc": "^0.28.19"
+  },
+  "name": "docusaurus-part3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

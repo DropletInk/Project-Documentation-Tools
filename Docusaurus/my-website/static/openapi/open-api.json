@@ -1,0 +1,2205 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Api Gateway",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/organizations": {
+      "post": {
+        "tags": ["Organization Management"],
+        "summary": "Create a new organization",
+        "operationId": "organization_create_post",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "orgId": "droplet123",
+                "orgName": "Droplet",
+                "contactName": "John Doe",
+                "contactNo": "8001042434",
+                "contactEmail": "john.doe@example.com",
+                "panNo": "ABCDE1234F",
+                "location": [
+                  {
+                    "address": "Kankurgachi, Kolkata",
+                    "city": "Kolkata",
+                    "state": "West Bengal",
+                    "pincode": "700054",
+                    "countryId": "661f8c9b1234567890abcd12",
+                    "timezone": "Asia/Kolkata",
+                    "gstin": "22ABCDE1234F1Z5"
+                  }
+                ]
+              },
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Organization created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrganizationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Organization created successfully",
+                  "data": {
+                    "orgId": "droplet123",
+                    "orgName": "Droplet",
+                    "status": "active",
+                    "createdAt": "2024-01-01T00:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid organization data" },
+          "401": { "description": "Unauthorized" },
+          "409": { "description": "Organization already exists" }
+        }
+      }
+    },
+
+    "/api/organizations/orgIdAvailability": {
+      "get": {
+        "tags": ["Organization Management"],
+        "summary": "Check if orgId is available",
+        "operationId": "orgIdAvailability_get",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orgId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$"
+            },
+            "example": "droplet123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "orgId Availability status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailabilityResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": { "available": true }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/organizations/{orgId}": {
+      "get": {
+        "tags": ["Organization Management"],
+        "summary": "Get organization details",
+        "operationId": "organization_details_get_by_id",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orgId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "droplet123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organization details fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDetailsResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "orgId": "droplet123",
+                    "orgName": "Droplet",
+                    "contactName": "John Doe",
+                    "contactNo": "8001042434",
+                    "contactEmail": "john.doe@example.com",
+                    "panNo": "ABCDE1234F",
+                    "status": "active",
+                    "location": [
+                      {
+                        "address": "Kankurgachi",
+                        "city": "Kolkata",
+                        "state": "West Bengal",
+                        "pincode": "700054",
+                        "country": {
+                          "id": "661f8c9b1234567890abcd12",
+                          "name": "India"
+                        },
+                        "timezone": "Asia/Kolkata",
+                        "gstin": "22ABCDE1234F1Z5"
+                      }
+                    ],
+                    "createdBy": "661f8c9b1234567890abcd01",
+                    "createdAt": "2024-01-01T00:00:00.000Z",
+                    "updatedAt": "2024-01-02T00:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "Organization not found" }
+        }
+      },
+
+      "patch": {
+        "tags": ["Organization Management"],
+        "summary": "Update organization details",
+        "operationId": "organization_update_patch",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orgId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "orgName": "Droplet.ink"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Organization updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessMessageResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Organization updated successfully"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid update payload" },
+          "403": { "description": "Access denied" },
+          "404": { "description": "Organization not found" }
+        }
+      }
+    },
+
+    "/api/organizations/{orgId}/members": {
+      "post": {
+        "tags": ["Organization Members"],
+        "summary": "Add member to organization",
+        "operationId": "organization_add_member",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orgId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMemberRequest"
+              },
+              "example": {
+                "userId": "661f8c9b1234567890abcd99",
+                "roles": ["member"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Member added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddMemberResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Member added successfully",
+                  "data": {
+                    "userId": "661f8c9b1234567890abcd99",
+                    "roles": ["member"],
+                    "joinedAt": "2024-01-01T00:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid request" },
+          "403": { "description": "Access denied" },
+          "404": { "description": "User or organization not found" }
+        }
+      },
+
+      "get": {
+        "tags": ["Organization Members"],
+        "summary": "Get all members of organization",
+        "operationId": "organization_get_members",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "orgId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 5 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Members list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgMembersListResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "userId": "661f8c9b1234567890abcd99",
+                      "roles": ["admin"],
+                      "joinedAt": "2024-01-01"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "per_page": 5,
+                    "total": 20,
+                    "totalPages": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/organizations/{orgId}/members/{userId}": {
+      "patch": {
+        "tags": ["Organization Members"],
+        "summary": "Update member role",
+        "operationId": "organization_update_member_role",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "orgId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberRoleRequest"
+              },
+              "example": {
+                "roles": ["admin"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMemberRoleResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Member role updated successfully",
+                  "data": {
+                    "userId": "661f8c9b1234567890abcd99",
+                    "roles": ["admin"]
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid role" },
+          "403": { "description": "Access denied" },
+          "404": { "description": "Member not found" }
+        }
+      }
+    },
+
+    "/api/projects": {
+      "post": {
+        "tags": ["Project Management"],
+        "summary": "Create a new Project",
+        "operationId": "project_create_post",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "personal_project": {
+                  "summary": "Personal project (no organization)",
+                  "value": {
+                    "name": "Calcutta High Court",
+                    "description": "Documents of Calcutta High Court"
+                  }
+                },
+                "organization_project": {
+                  "summary": "Project under an organization",
+                  "value": {
+                    "name": "Calcutta High Court",
+                    "description": "Documents of Calcutta High Court",
+                    "organizationId": "661f8c9b1234567890abcd99"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProjectResponse"
+                },
+                "examples": {
+                  "personal_project": {
+                    "summary": "Created without organization",
+                    "value": {
+                      "success": true,
+                      "message": "Project created successfully",
+                      "data": {
+                        "projectId": "661f8c9b1234567890abcd50",
+                        "name": "Calcutta High Court",
+                        "description": "Documents of Calcutta High Court",
+                        "status": "active",
+                        "createdAt": "2024-01-01T00:00:00.000Z"
+                      }
+                    }
+                  },
+                  "organization_project": {
+                    "summary": "Created under an organization",
+                    "value": {
+                      "success": true,
+                      "message": "Project created successfully",
+                      "data": {
+                        "projectId": "661f8c9b1234567890abcd50",
+                        "name": "Calcutta High Court",
+                        "description": "Documents of Calcutta High Court",
+                        "organizationId": "661f8c9b1234567890abcd99",
+                        "status": "active",
+                        "createdAt": "2024-01-01T00:00:00.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid Input" },
+          "409": { "description": "Project already exists" }
+        }
+      },
+
+      "get": {
+        "tags": ["Project Management"],
+        "summary": "List all projects for a user or organization",
+        "operationId": "get_all_project",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of projects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectListResponse"
+                },
+                "examples": {
+                  "personal_projects": {
+                    "summary": "Projects without organization",
+                    "value": {
+                      "success": true,
+                      "data": [
+                        {
+                          "projectId": "661f8c9b1234567890abcd50",
+                          "name": "Calcutta High Court",
+                          "description": "Documents of Calcutta High Court",
+                          "status": "active",
+                          "createdAt": "2024-01-01T00:00:00.000Z"
+                        }
+                      ],
+                      "pagination": {
+                        "page": 1,
+                        "per_page": 10,
+                        "total": 50,
+                        "totalPages": 5
+                      }
+                    }
+                  },
+                  "organization_projects": {
+                    "summary": "Projects under an organization",
+                    "value": {
+                      "success": true,
+                      "data": [
+                        {
+                          "projectId": "661f8c9b1234567890abcd50",
+                          "name": "Calcutta High Court",
+                          "description": "Documents of Calcutta High Court",
+                          "organizationId": "661f8c9b1234567890abcd99",
+                          "status": "active",
+                          "createdAt": "2024-01-01T00:00:00.000Z"
+                        }
+                      ],
+                      "pagination": {
+                        "page": 1,
+                        "per_page": 10,
+                        "total": 50,
+                        "totalPages": 5
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/projects/availability": {
+      "get": {
+        "tags": ["Project Management"],
+        "summary": "Check if Project Name is available",
+        "operationId": "project_name_availability",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "projectName",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "organizationId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvailabilityResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": { "available": false }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+
+    "/api/projects/{projectId}": {
+      "get": {
+        "tags": ["Project Management"],
+        "summary": "Get information of a project",
+        "operationId": "get_project_details",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetailsResponse"
+                },
+                "examples": {
+                  "personal_project": {
+                    "summary": "Project without organization",
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "projectId": "661f8c9b1234567890abcd50",
+                        "name": "Calcutta High Court",
+                        "description": "Documents of Calcutta High Court",
+                        "status": "active",
+                        "createdBy": "661f8c9b1234567890abcd01",
+                        "createdAt": "2024-01-01T00:00:00.000Z",
+                        "updatedAt": "2024-01-02T00:00:00.000Z"
+                      }
+                    }
+                  },
+                  "organization_project": {
+                    "summary": "Project under an organization",
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "projectId": "661f8c9b1234567890abcd50",
+                        "name": "Calcutta High Court",
+                        "description": "Documents of Calcutta High Court",
+                        "organizationId": "661f8c9b1234567890abcd99",
+                        "status": "active",
+                        "createdBy": "661f8c9b1234567890abcd01",
+                        "createdAt": "2024-01-01T00:00:00.000Z",
+                        "updatedAt": "2024-01-02T00:00:00.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "Project not found" }
+        }
+      },
+
+      "patch": {
+        "tags": ["Project Management"],
+        "summary": "Update project details",
+        "operationId": "update_project_details",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Calcutta High Court Updated",
+                "description": "Updated description"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProjectResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Project updated successfully",
+                  "data": {
+                    "projectId": "661f8c9b1234567890abcd50",
+                    "name": "Calcutta High Court Updated",
+                    "updatedAt": "2024-01-03T00:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input" },
+          "404": { "description": "Project not found" }
+        }
+      }
+    },
+
+    "/api/projects/{projectId}/members": {
+      "post": {
+        "tags": ["Project Members"],
+        "summary": "Add member to a project",
+        "operationId": "add_project_member",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMemberRequest"
+              },
+              "example": {
+                "userId": "661f8c9b1234567890abcd99",
+                "roles": ["member"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Member added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddMemberResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Member added successfully",
+                  "data": {
+                    "userId": "661f8c9b1234567890abcd99",
+                    "roles": ["member"],
+                    "joinedAt": "2024-01-01T00:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "409": { "description": "Member already exists" }
+        }
+      },
+
+      "get": {
+        "tags": ["Project Members"],
+        "summary": "Get project members",
+        "operationId": "get_project_members",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 3 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Members list fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMembersResponse"
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "userId": "661f8c9b1234567890abcd99",
+                      "roles": ["admin"],
+                      "joinedAt": "2024-01-01T00:00:00.000Z"
+                    }
+                  ],
+                  "pagination": {
+                    "page": 1,
+                    "per_page": 3,
+                    "total": 10,
+                    "totalPages": 4
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/api/projects/{projectId}/members/{userId}": {
+      "patch": {
+        "tags": ["Project Members"],
+        "summary": "Update project member role",
+        "operationId": "update_project_role",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberRoleRequest"
+              },
+              "example": {
+                "roles": ["admin"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMemberRoleResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Member role updated successfully",
+                  "data": {
+                    "userId": "661f8c9b1234567890abcd99",
+                    "roles": ["admin"]
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "Member not found" }
+        }
+      }
+    },
+    "/api/projects/{projectId}/configuration/services": {
+      "post": {
+        "tags": ["Project Services Configuration"],
+        "summary": "Create project services configuration",
+        "operationId": "post_project_services_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProjectIdParam" },
+          { "$ref": "#/components/parameters/UserIdHeader" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ServicesConfig" },
+              "example": {
+                "selectedServices": [
+                  "image_processing",
+                  "doctype_classification",
+                  "metadata_extraction"
+                ],
+                "pipelineOrder": [
+                  "image_processing",
+                  "doctype_classification",
+                  "metadata_extraction"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Services configuration created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ServicesConfigResponse" },
+                "example": {
+                  "success": true,
+                  "message": "Services configuration saved successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "selectedServices": [
+                      "image_preparation",
+                      "doctype_classification",
+                      "metadata_extraction"
+                    ],
+                    "pipelineOrder": [
+                      "image_preparation",
+                      "doctype_classification",
+                      "metadata_extraction"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid request body" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Project not found" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "patch": {
+        "tags": ["Project Services Configuration"],
+        "summary": "Update project services configuration",
+        "operationId": "patch_project_services_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProjectIdParam" },
+          { "$ref": "#/components/parameters/UserIdHeader" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ServicesConfig" },
+              "example": {
+                "selectedServices": ["image_preparation", "doctype_classification"],
+                "pipelineOrder": ["image_preparation", "doctype_classification"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Services configuration updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ServicesConfigResponse" },
+                "example": {
+                  "success": true,
+                  "message": "Services configuration saved successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "selectedServices": ["image_preparation", "doctype_classification"],
+                    "pipelineOrder": ["image_preparation", "doctype_classification"]
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid request body" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Project not found" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "get": {
+        "tags": ["Project Services Configuration"],
+        "summary": "Get project services configuration",
+        "operationId": "get_project_services_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/ProjectIdParam" },
+          { "$ref": "#/components/parameters/UserIdHeader" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Services configuration fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ServicesConfigResponse" },
+                "example": {
+                  "success": true,
+                  "message": "Services configuration fetched successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "selectedServices": [
+                      "image_preparation",
+                      "doctype_classification",
+                      "metadata_extraction"
+                    ],
+                    "pipelineOrder": [
+                      "image_preparation",
+                      "doctype_classification",
+                      "metadata_extraction"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Project not found" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+
+    "/api/projects/{projectId}/configuration/doctypes": {
+      "post": {
+        "tags": ["Project Doctype Configuration"],
+        "summary": "Create doctype configuration",
+        "operationId": "post_project_doctype_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctypeConfigurationRequest"
+              },
+              "example": {
+                "doctypes": [
+                  {
+                    "name": "final_judgement",
+                    "marker": "judgement_title",
+                    "required": true,
+                    "tag": "legal"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Doctype configuration created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctypeConfigurationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Doctype configuration saved successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "doctypesConfigured": 1,
+                    "doctypes": [
+                      {
+                        "name": "final_judgement",
+                        "marker": "judgement_title",
+                        "required": true,
+                        "tag": "legal"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "409": {
+            "description": "Duplicate doctype configuration"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "patch": {
+        "tags": ["Project Doctype Configuration"],
+        "summary": "Update doctype configuration",
+        "operationId": "patch_project_doctype_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DoctypeConfigurationRequest"
+              },
+              "example": {
+                "doctypes": [
+                  {
+                    "name": "final_judgement",
+                    "marker": "updated_judgement_marker",
+                    "required": true,
+                    "tag": "legal"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Doctype configuration updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctypeConfigurationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Doctype configuration updated successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "doctypesConfigured": 1,
+                    "doctypes": [
+                      {
+                        "name": "final_judgement",
+                        "marker": "updated_judgement_marker",
+                        "required": true,
+                        "tag": "legal"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "409": {
+            "description": "Duplicate doctype configuration"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "get": {
+        "tags": ["Project Doctype Configuration"],
+        "summary": "Get all project doctypes",
+        "operationId": "get_project_doctype_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Doctype configuration fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctypeConfigurationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Doctype configuration fetched successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "doctypesConfigured": 1,
+                    "doctypes": [
+                      {
+                        "name": "final_judgement",
+                        "marker": "updated_judgement_marker",
+                        "required": true,
+                        "tag": "legal"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/projects/{projectId}/configuration/fields": {
+      "post": {
+        "tags": ["Project Metadata Configuration"],
+        "summary": "Create metadata extraction fields",
+        "operationId": "post_project_fields_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldConfigurationRequest"
+              },
+              "example": {
+                "rules": [
+                  {
+                    "name": "case_number",
+                    "description": "Unique case identifier",
+                    "value": "string",
+                    "choices": [],
+                    "required": true,
+                    "control_field": true,
+                    "location": [
+                      {
+                        "contextDoctype": "final_judgement",
+                        "pages": "1,2",
+                        "type": ["literal"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Field configuration created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldConfigurationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Field configuration saved successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "rulesConfigured": 1,
+                    "rules": [
+                      {
+                        "name": "case_number",
+                        "description": "Unique case identifier",
+                        "value": "string",
+                        "choices": [],
+                        "required": true,
+                        "control_field": true,
+                        "location": [
+                          {
+                            "contextDoctype": "final_judgement",
+                            "pages": "1,2",
+                            "type": ["literal"]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "409": {
+            "description": "Duplicate field rule"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "patch": {
+        "tags": ["Project Metadata Configuration"],
+        "summary": "Update metadata extraction fields",
+        "operationId": "patch_project_fields_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldConfigurationRequest"
+              },
+              "example": {
+                "rules": [
+                  {
+                    "name": "petitioner_name",
+                    "description": "Name of the petitioner",
+                    "value": "string",
+                    "choices": [],
+                    "required": true,
+                    "control_field": false,
+                    "location": [
+                      {
+                        "contextDoctype": "final_judgement",
+                        "pages": "1",
+                        "type": ["contextual"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Field configuration updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldConfigurationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Field configuration updated successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "rulesConfigured": 1,
+                    "rules": [
+                      {
+                        "name": "petitioner_name",
+                        "description": "Name of the petitioner",
+                        "value": "string",
+                        "choices": [],
+                        "required": true,
+                        "control_field": false,
+                        "location": [
+                          {
+                            "contextDoctype": "final_judgement",
+                            "pages": "1",
+                            "type": ["contextual"]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "409": {
+            "description": "Duplicate field rule"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+
+      "get": {
+        "tags": ["Project Metadata Configuration"],
+        "summary": "Get all metadata extraction fields",
+        "operationId": "get_project_fields_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Field configuration fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldConfigurationResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Field configuration fetched successfully",
+                  "data": {
+                    "projectId": "d97b2106-e684-4362-abbb-1e55be347310",
+                    "rulesConfigured": 1,
+                    "rules": [
+                      {
+                        "name": "petitioner_name",
+                        "description": "Name of the petitioner",
+                        "value": "string",
+                        "choices": [],
+                        "required": true,
+                        "control_field": false,
+                        "location": [
+                          {
+                            "contextDoctype": "final_judgement",
+                            "pages": "1",
+                            "type": ["contextual"]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+
+    "/api/projects/{projectId}/configuration": {
+      "get": {
+        "tags": ["Project Configuration"],
+        "summary": "Get full project configuration",
+        "operationId": "get_full_project_configuration",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdParam"
+          },
+          {
+            "$ref": "#/components/parameters/UserIdHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full project configuration fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullProjectConfigurationResponse"
+                },
+                "example": {
+                  "project": "Legal Document Parser",
+                  "id": "d97b2106-e684-4362-abbb-1e55be347310",
+                  "version": "0.1.0",
+                  "services": {
+                    "selectedServices": [
+                      "image_preparation",
+                      "doctype_classification",
+                      "metadata_extraction"
+                    ],
+                    "pipelineOrder": [
+                      "image_preparation",
+                      "doctype_classification",
+                      "metadata_extraction"
+                    ]
+                  },
+                  "doctypes": [
+                    {
+                      "name": "final_judgement",
+                      "marker": "judgement_title",
+                      "required": true,
+                      "tag": "legal"
+                    }
+                  ],
+                  "rules": [
+                    {
+                      "name": "petitioner_name",
+                      "description": "Name of the petitioner",
+                      "value": "string",
+                      "choices": [],
+                      "required": true,
+                      "control_field": false,
+                      "location": [
+                        {
+                          "contextDoctype": "final_judgement",
+                          "pages": "1",
+                          "type": ["contextual"]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Project configuration not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "ProjectIdParam": {
+        "name": "projectId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "UserIdHeader": {
+        "name": "x-user-id",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+
+    "schemas": {
+      "LocationInput": {
+        "type": "object",
+        "properties": {
+          "address": { "type": "string" },
+          "city": { "type": "string" },
+          "state": { "type": "string" },
+          "pincode": { "type": "string" },
+          "countryId": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{24}$"
+          },
+          "timezone": { "type": "string" },
+          "gstin": {
+            "type": "string",
+            "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
+          }
+        },
+        "required": ["address", "city", "state", "pincode", "countryId", "timezone"]
+      },
+
+      "LocationOutput": {
+        "type": "object",
+        "description": "Location details returned as object",
+        "properties": {
+          "address": { "type": "string" },
+          "city": { "type": "string" },
+          "state": { "type": "string" },
+          "pincode": { "type": "string" },
+          "country": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" }
+            },
+            "required": ["id", "name"]
+          },
+          "timezone": { "type": "string" },
+          "gstin": { "type": "string" }
+        },
+        "required": ["address", "city", "state", "pincode", "country", "timezone"]
+      },
+
+      "CreateOrganizationRequest": {
+        "type": "object",
+        "properties": {
+          "orgId": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50,
+            "pattern": "^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$"
+          },
+          "orgName": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 80
+          },
+          "contactName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contactNo": {
+            "type": "string",
+            "pattern": "^\\+?[1-9]\\d{6,14}$"
+          },
+          "contactEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "panNo": {
+            "type": "string",
+            "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
+          },
+          "location": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LocationInput" }
+          }
+        },
+        "required": ["orgId", "orgName", "contactName", "contactNo", "location"]
+      },
+
+      "AddMemberRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{24}$"
+          },
+          "roles": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["userId", "roles"]
+      },
+
+      "UpdateMemberRoleRequest": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["roles"]
+      },
+
+      "CreateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "organizationId": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "description": "Optional. Only include if the project belongs to an organization. Must be a valid MongoDB ObjectId."
+          }
+        },
+        "required": ["name"]
+      },
+
+      "AvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "available": { "type": "boolean" }
+            },
+            "required": ["available"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+
+      "SuccessMessageResponse": {
+        "type": "object",
+        "description": "Generic success response with a message and no data payload",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "message": { "type": "string" }
+        },
+        "required": ["success", "message"]
+      },
+
+      "MemberEntry": {
+        "type": "object",
+        "description": "A single member record shared across org and project member responses",
+        "properties": {
+          "userId": { "type": "string", "pattern": "^[a-fA-F0-9]{24}$" },
+          "roles": { "type": "array", "items": { "type": "string" } },
+          "joinedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["userId", "roles", "joinedAt"]
+      },
+
+      "CreateOrganizationResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "orgId": { "type": "string" },
+              "orgName": { "type": "string" },
+              "status": { "type": "string", "enum": ["active", "inactive", "suspended"] },
+              "createdAt": { "type": "string", "format": "date-time" }
+            },
+            "required": ["orgId", "orgName", "status", "createdAt"]
+          }
+        },
+        "required": ["success", "message", "data"]
+      },
+
+      "OrganizationDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "data": {
+            "type": "object",
+            "properties": {
+              "orgId": { "type": "string" },
+              "orgName": { "type": "string" },
+              "contactName": { "type": "string" },
+              "contactNo": { "type": "string" },
+              "contactEmail": { "type": "string", "format": "email" },
+              "panNo": { "type": "string" },
+              "status": { "type": "string", "enum": ["active", "inactive", "suspended"] },
+              "location": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/LocationOutput" }
+              },
+              "createdBy": { "type": "string" },
+              "createdAt": { "type": "string", "format": "date-time" },
+              "updatedAt": { "type": "string", "format": "date-time" }
+            },
+            "required": ["orgId", "orgName", "status", "location", "createdAt", "updatedAt"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+
+      "AddMemberResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/MemberEntry" }
+        },
+        "required": ["success", "message", "data"]
+      },
+
+      "OrgMembersListResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MemberEntry" }
+          },
+          "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+        },
+        "required": ["success", "data", "pagination"]
+      },
+
+      "UpdateMemberRoleResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "userId": { "type": "string" },
+              "roles": { "type": "array", "items": { "type": "string" } }
+            },
+            "required": ["userId", "roles"]
+          }
+        },
+        "required": ["success", "message", "data"]
+      },
+
+      "ProjectEntry": {
+        "type": "object",
+        "description": "A single project summary object shared across list and create responses",
+        "properties": {
+          "projectId": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "organizationId": {
+            "type": "string",
+            "description": "Only present if the project belongs to an organization"
+          },
+          "status": { "type": "string", "enum": ["active", "archived", "deleted"] },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["projectId", "name", "status", "createdAt"]
+      },
+
+      "CreateProjectResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/ProjectEntry" }
+        },
+        "required": ["success", "message", "data"]
+      },
+
+      "ProjectListResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProjectEntry" }
+          },
+          "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+        },
+        "required": ["success", "data", "pagination"]
+      },
+
+      "ProjectDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "data": {
+            "type": "object",
+            "properties": {
+              "projectId": { "type": "string" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "organizationId": {
+                "type": "string",
+                "description": "Only present if the project belongs to an organization"
+              },
+              "status": { "type": "string", "enum": ["active", "archived", "deleted"] },
+              "createdBy": { "type": "string" },
+              "createdAt": { "type": "string", "format": "date-time" },
+              "updatedAt": { "type": "string", "format": "date-time" }
+            },
+            "required": ["projectId", "name", "status", "createdBy", "createdAt", "updatedAt"]
+          }
+        },
+        "required": ["success", "data"]
+      },
+
+      "UpdateProjectResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "projectId": { "type": "string" },
+              "name": { "type": "string" },
+              "updatedAt": { "type": "string", "format": "date-time" }
+            },
+            "required": ["projectId", "updatedAt"]
+          }
+        },
+        "required": ["success", "message", "data"]
+      },
+
+      "PaginationMeta": {
+        "type": "object",
+        "description": "Pagination metadata for list endpoints that support page/per_page query params",
+        "properties": {
+          "page": { "type": "integer" },
+          "per_page": { "type": "integer" },
+          "total": { "type": "integer" },
+          "totalPages": { "type": "integer" }
+        },
+        "required": ["page", "per_page", "total", "totalPages"]
+      },
+
+      "ProjectMembersResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MemberEntry" }
+          },
+          "pagination": { "$ref": "#/components/schemas/PaginationMeta" }
+        },
+        "required": ["success", "data", "pagination"]
+      },
+      "ServicesConfig": {
+        "type": "object",
+        "required": ["selectedServices"],
+        "properties": {
+          "selectedServices": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "document_ingestion",
+                "image_preparation",
+                "document_classification",
+                "document_assembly",
+                "data_extraction",
+                "data_validation",
+                "data_enrichment",
+                "business_rule_engine",
+                "confidence_engine",
+                "human_in_the_loop",
+                "quality_analytics",
+                "data_output",
+                "post_processing",
+                "dashboard"
+              ]
+            }
+          },
+
+          "pipelineOrder": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "document_ingestion",
+                "image_preparation",
+                "document_classification",
+                "document_assembly",
+                "data_extraction",
+                "data_validation",
+                "data_enrichment",
+                "business_rule_engine",
+                "confidence_engine",
+                "human_in_the_loop",
+                "quality_analytics",
+                "data_output",
+                "post_processing",
+                "dashboard"
+              ]
+            }
+          }
+        }
+      },
+      "ServicesConfigResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "projectId": {
+                "type": "string"
+              },
+              "selectedServices": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "pipelineOrder": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "DoctypeConfigurationRequest": {
+        "type": "object",
+        "required": ["doctypes"],
+        "properties": {
+          "doctypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoctypeDefinition"
+            }
+          }
+        }
+      },
+      "DoctypeDefinition": {
+        "type": "object",
+        "required": ["name", "marker", "required"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "marker": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "tag": {
+            "type": ["string", "null"]
+          }
+        }
+      },
+      "DoctypeConfigurationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "projectId": {
+                "type": "string"
+              },
+              "doctypesConfigured": {
+                "type": "integer"
+              },
+              "doctypes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DoctypeDefinition"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FieldConfigurationRequest": {
+        "type": "object",
+        "required": ["rules"],
+        "properties": {
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldRuleDefinition"
+            }
+          }
+        }
+      },
+      "FieldRuleDefinition": {
+        "type": "object",
+        "required": ["name", "description", "value", "required", "control_field", "location"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "control_field": {
+            "type": "boolean"
+          },
+          "location": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldLocation"
+            }
+          }
+        }
+      },
+      "FieldLocation": {
+        "type": "object",
+        "required": ["contextDoctype", "pages", "type"],
+        "properties": {
+          "contextDoctype": {
+            "type": "string"
+          },
+          "pages": {
+            "type": "string"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["literal", "contextual"]
+            }
+          }
+        }
+      },
+      "FieldConfigurationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "projectId": {
+                "type": "string"
+              },
+              "rulesConfigured": {
+                "type": "integer"
+              },
+              "rules": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FieldRuleDefinition"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FullProjectConfigurationResponse": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "services": {
+            "$ref": "#/components/schemas/ServicesConfig"
+          },
+          "doctypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoctypeDefinition"
+            }
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldRuleDefinition"
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
