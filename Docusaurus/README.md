@@ -183,7 +183,7 @@ now as the content visiblity for the files and folder is controlled by the docus
 
 so there i can apply the concept 
 
-like i case of navbar i can do this  ( you can see )
+like in case of navbar i can add this so that it can be hidden 
 
 ``` ts
 
