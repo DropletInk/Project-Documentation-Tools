@@ -1,10 +1,10 @@
 # MkDocs Documentation Tutorial
 
-This is a simple walkthrough for setting up a MkDocs documentation site. It also covers how to add Python docs, TypeScript API docs, and OpenAPI documentation into the same project.
+This is a set up a MkDocs documentation site. It also covers how to add Python docs, TypeScript API docs, and OpenAPI documentation into the same project.
 
 ## 1. Set Up MkDocs
 
-Start by creating or opening your Python project. If you are using `uv`, install MkDocs and the Material theme:
+Start by creating a Python project. If you are using `uv`, install MkDocs and the Material theme:
 
 ```bash
 uv add mkdocs mkdocs-material
@@ -163,9 +163,9 @@ Make sure the `spec-url` points to the correct OpenAPI JSON file:
 <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 ```
 
-## Final Check
+## Final 
 
-Once everything is in place, run:
+Once everything is done , run:
 
 ```bash
 mkdocs serve --livereload
