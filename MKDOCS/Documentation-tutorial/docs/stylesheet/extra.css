@@ -1,0 +1,121 @@
+[data-md-color-scheme="slate"] .swagger-ui {
+
+    color: #f5f5f5 !important;
+}
+
+[data-md-color-scheme="slate"] .swagger-ui h1,
+[data-md-color-scheme="slate"] .swagger-ui h2,
+[data-md-color-scheme="slate"] .swagger-ui h3,
+[data-md-color-scheme="slate"] .swagger-ui h4 {
+
+    color: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .swagger-ui p,
+[data-md-color-scheme="slate"] .swagger-ui label,
+[data-md-color-scheme="slate"] .swagger-ui span,
+[data-md-color-scheme="slate"] .swagger-ui div {
+
+    color: #e0e0e0 !important;
+}
+
+
+[data-md-color-scheme="slate"] .swagger-ui .opblock-tag {
+
+    color: #ffffff !important;
+}
+
+
+
+[data-md-color-scheme="slate"] .swagger-ui .opblock-summary-path {
+
+    color: #4fc3f7 !important;
+}
+
+
+[data-md-color-scheme="slate"] .swagger-ui .opblock-description-wrapper p {
+
+    color: #d6d6d6 !important;
+}
+
+
+
+[data-md-color-scheme="slate"] .swagger-ui .btn {
+
+    color: #ffffff !important;
+    border-color: #5c6bc0 !important;
+}
+
+
+[data-md-color-scheme="slate"] .swagger-ui input {
+
+    color: #ffffff !important;
+    background-color: #2b2d31 !important;
+}
+
+
+
+[data-md-color-scheme="slate"] .swagger-ui section.models {
+
+    background-color: #25262b !important;
+}
+
+
+[data-md-color-scheme="slate"] .swagger-ui .scheme-container {
+
+    background-color: #25262b !important;
+    box-shadow: none !important;
+}
+
+
+
+[data-md-color-scheme="slate"] .swagger-ui table tbody tr td {
+
+    color: #e0e0e0 !important;
+}
+
+
+
+
+[data-md-color-scheme="slate"] .swagger-ui {
+
+    color: #f5f5f5 !important;
+}
+
+
+
+[data-md-color-scheme="slate"] .swagger-ui .info .title {
+
+    color: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .swagger-ui .info p,
+[data-md-color-scheme="slate"] .swagger-ui .info li,
+[data-md-color-scheme="slate"] .swagger-ui .info span {
+
+    color: #d6d6d6 !important;
+}
+
+[data-md-color-scheme="slate"] .swagger-ui .opblock-tag {
+
+    color: #ffffff !important;
+}
+
+
+[data-md-color-scheme="slate"] .swagger-ui .opblock-summary-description {
+
+    color: #e0e0e0 !important;
+}
+
+
+[data-md-color-scheme="slate"] .swagger-ui .download-url-wrapper label {
+
+    color: #ffffff !important;
+}
+
+[data-md-color-scheme="slate"] .swagger-ui p,
+[data-md-color-scheme="slate"] .swagger-ui span,
+[data-md-color-scheme="slate"] .swagger-ui div {
+
+    color: #e0e0e0 !important;
+}

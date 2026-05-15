@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Documentation</title>
+
+  <meta charset="utf-8"/>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+</head>
+
+<body>
+
+<redoc spec-url="/openapi.json"></redoc>
+
+<script>
+Redoc.init('/openapi.json', {
+  theme: {
+    colors: {
+      primary: {
+        main: '#7c4dff'
+      }
+    },
+    sidebar: {
+      backgroundColor: '#111827',
+      textColor: '#ffffff'
+    },
+    typography: {
+      fontSize: '15px',
+      fontFamily: 'Segoe UI, sans-serif',
+      headings: {
+        fontFamily: 'Segoe UI, sans-serif'
+      }
+    }
+  }
+})
+</script>
+
+</body>
+</html>

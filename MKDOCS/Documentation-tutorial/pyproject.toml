@@ -1,0 +1,15 @@
+[project]
+name = "documentation-tutorial"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.6",
+    "mkdocs-openapi-markdown-plugin>=0.0.3",
+    "mkdocs-schema-reader>=0.11.1",
+    "mkdocs-swagger-ui-tag>=0.8.0",
+    "mkdocstrings-typescript>=0.1.0",
+    "mkdocstrings[python,typescript]>=1.0.4",
+]

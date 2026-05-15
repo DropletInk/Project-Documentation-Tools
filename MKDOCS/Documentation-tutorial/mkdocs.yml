@@ -1,0 +1,96 @@
+site_name: My site
+site_url: https://mydomain.org/mysite
+nav:
+  - Home: index.md
+  - About: about.md
+  - Code: code.md
+  - Type: Type.md
+  - Flowchart: Flowchart.md
+  - Grid: Grid.md 
+  - Footnote: Footnotes.md
+  - API Docs: api
+  - OpenAPI: openapi.md
+  
+
+theme:
+  font:
+    text: Roboto
+    code: Roboto Mono
+  name: material
+  custom_dir: overrides
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    # accent: light-purple
+  # Light mode
+    - scheme: default
+      primary: blue grey
+      accent: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # Dark mode
+    - scheme: slate
+      primary: dark blue grey
+      accent: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+plugins: 
+  - mkdocstrings:
+      default_handler: python
+  - search
+  - schema_reader:
+      include:
+        - "docs/openapi.json"
+
+
+markdown_extensions:
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.highlight:
+      auto_title: true
+      linenums: true
+      anchor_linenums: true
+
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+
+  - footnotes
+  - pymdownx.critic:
+      mode: view
+
+extra_javascript:
+  - https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js
+  - https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js
+
+extra_css:
+  - stylesheet/extra.css
+  - https://unpkg.com/swagger-ui-dist/swagger-ui.css

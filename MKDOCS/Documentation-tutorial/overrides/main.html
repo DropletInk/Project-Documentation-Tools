@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+
+  <style>
+
+    /* Make content wider */
+    .md-grid {
+      max-width: 100% !important;
+    }
+
+    /* Remove content width restriction */
+    .md-content__inner {
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+
+    /* Better Redoc layout */
+    .redoc-wrap {
+      width: 100% !important;
+    }
+
+  </style>
+
+{% endblock %}
