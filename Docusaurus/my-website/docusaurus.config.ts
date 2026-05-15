@@ -111,13 +111,6 @@ const config: Config = {
       position: 'left',
       label: 'Tutorial',
     },
-
-    {
-      to: '/helloreact',
-      label: 'TS file',
-      position: 'left',
-    },
-
     {
       type: 'docSidebar',
       sidebarId: 'pythonSidebar',
@@ -125,7 +118,12 @@ const config: Config = {
       label: 'Python',
     },
     { to: '/blog', label: 'Blog',position: 'left'},
-
+    {
+      type: 'docSidebar',
+      sidebarId: 'newSidebar',
+      position: 'left',
+      label: 'New',
+    },
     // Conditional Item
     ...(!isProd 
       ? [
@@ -133,7 +131,7 @@ const config: Config = {
         type: 'docSidebar',
         sidebarId: 'TypescriptSidebar',
         position: 'left' as const,
-        label: 'Typescript',
+        label: 'TypeScript',
       },
   ]:[]),
 
