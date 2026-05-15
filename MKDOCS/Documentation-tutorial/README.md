@@ -1,53 +1,64 @@
+# MkDocs Documentation Tutorial
 
-===
-## Steps to Set up the MkDocs 
+This is a simple walkthrough for setting up a MkDocs documentation site. It also covers how to add Python docs, TypeScript API docs, and OpenAPI documentation into the same project.
 
-first Setup your python project using uv
-then
+## 1. Set Up MkDocs
 
+Start by creating or opening your Python project. If you are using `uv`, install MkDocs and the Material theme:
+
+```bash
 uv add mkdocs mkdocs-material
+```
 
-now 
+Now create a new MkDocs project in the current folder:
 
+```bash
 mkdocs new .
+```
 
-This Creates the docs folder and under that there is a file  called index.md
+This creates a `docs` folder. Inside that folder, you will find an `index.md` file, which is the first page of your documentation site.
 
-now 
+Run the local development server to preview the site:
+
+```bash
 mkdocs serve --livereload
+```
 
+You can customize the site from the `mkdocs.yml` file. This is where you add the theme, navigation, plugins, and other styling options.
 
+## 2. Add Python Documentation
 
-add some features in mkdocs.yml to add the style in the markdown files 
+To show documentation from Python docstrings, add the Python file or function reference inside a Markdown file.
 
+For example, if `main.py` is the file name:
 
-To add the python file containing doc string 
+```md
+::: main
+```
 
-main is the name of the file in that folder
+If you only want to document the `add` function inside `main.py`, use:
 
-::: main                        
+```md
+::: main.add
+```
 
-add is the function name under the main file
+This keeps the documentation close to the real code, so updates are easier to manage.
 
-::: main.add 
+## 3. Add TypeScript Documentation
 
+For TypeScript, first set up a basic TypeScript project:
 
-
-for typescript file 
-
-set up your typescript project 
-
+```bash
 npm init -y
-
 npm install typescript --save-dev
-
 npx tsc --init
+```
 
+Put your TypeScript files inside a `src` folder.
 
-add you ts file in src folder  
+Update `tsconfig.json`:
 
-and then add this section in your tsconfig.json
-
+```json
 {
   "compilerOptions": {
     "target": "ES6",
@@ -57,16 +68,17 @@ and then add this section in your tsconfig.json
     "strict": true
   }
 }
+```
 
+Install TypeDoc:
 
-then 
-
-install 
+```bash
 npm install --save-dev typedoc
+```
 
-create typedoc.json
+Then create a `typedoc.json` file:
 
-and add 
+```json
 {
   "entryPoints": ["src/index.ts"],
   "out": "docs/api-generated",
@@ -75,39 +87,31 @@ and add
   "includeVersion": true,
   "name": "Task Manager API Documentation"
 }
+```
 
+Generate the documentation:
 
-To generate documentation 
-
+```bash
 npx typedoc
+```
 
-This creates 
+This will generate the API documentation inside:
+
+```text
 docs/api-generated/
+```
 
+## 4. Generate Markdown API Docs from TypeScript
 
+If you want the TypeScript API documentation as Markdown files, install the TypeDoc Markdown plugin:
 
-Now  add 
-npm install typedoc-plugin-markdown --save-dev
-
-Update typedoc.json
-
-{
-  "entryPoints": ["src/index.ts"],
-  "out": "docs/api",
-  "plugin": ["typedoc-plugin-markdown"]
-}
-
-again 
-run 
-
-npx typedoc
-
-finally 
-
+```bash
 npm install typedoc typedoc-plugin-markdown --save-dev
+```
 
-update  typedoc.json
+Update `typedoc.json`:
 
+```json
 {
   "entryPoints": ["src/index.ts"],
   "out": "docs/api",
@@ -116,33 +120,55 @@ update  typedoc.json
   "excludeProtected": true,
   "name": "Task Manager API"
 }
+```
 
+Run TypeDoc again:
+
+```bash
 npx typedoc
+```
 
+After that, start MkDocs again:
 
+```bash
 mkdocs serve --livereload
+```
 
+## 5. Add OpenAPI Documentation
 
+To show OpenAPI documentation inside MkDocs, install the Swagger UI tag plugin:
 
-### FOR OPEN API  json 
-install
-
+```bash
 pip install mkdocs-swagger-ui-tag
+```
 
+Add the required JavaScript and CSS files to `mkdocs.yml`:
 
-add this in you mkdocs.yml
-
+```yaml
 extra_javascript:
   - https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js
   - https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js
 
 extra_css:
   - https://unpkg.com/swagger-ui-dist/swagger-ui.css
+```
 
+Create an `api.md` file inside the `docs` folder and add the OpenAPI viewer.
 
-create  a api.md file inside docs folder 
+Make sure the `spec-url` points to the correct OpenAPI JSON file:
 
-                    here give the correct path 
-<redoc spec-url='openapi.json'></redoc>
+```html
+<redoc spec-url="openapi.json"></redoc>
 
 <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+```
+
+## Final Check
+
+Once everything is in place, run:
+
+```bash
+mkdocs serve --livereload
+```
+
+Open the local MkDocs site in your browser and check that the normal pages, Python docs, TypeScript docs, and OpenAPI docs are all loading properly.
