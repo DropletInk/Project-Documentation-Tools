@@ -171,4 +171,5 @@ Once everything is done , run:
 mkdocs serve --livereload
 ```
 
-Open the local MkDocs site in your browser and check that the normal pages, Python docs, TypeScript docs, and OpenAPI docs are all loading properly.
+Open the local MkDocs site in your browser and check that the normal pages, Python docs, TypeScript docs, and OpenAPI docs are all loading proper
+

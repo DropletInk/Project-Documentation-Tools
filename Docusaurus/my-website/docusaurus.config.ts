@@ -98,7 +98,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-  title: 'My Site',
+  title: 'Droplet',
   logo: {
     alt: 'My Site Logo',
     src: 'img/logo.svg',
@@ -111,18 +111,12 @@ const config: Config = {
       position: 'left',
       label: 'Tutorial',
     },
+    { to: '/blog', label: 'Blog',position: 'left'},
     {
       type: 'docSidebar',
       sidebarId: 'pythonSidebar',
       position: 'left',
       label: 'Python',
-    },
-    { to: '/blog', label: 'Blog',position: 'left'},
-    {
-      type: 'docSidebar',
-      sidebarId: 'newSidebar',
-      position: 'left',
-      label: 'New',
     },
     // Conditional Item
     ...(!isProd 

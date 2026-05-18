@@ -9,6 +9,9 @@
   position: relative;
   overflow: hidden;
 }
+.hero__title{
+  color: darkgrey;
+}
 
 @media screen and (max-width: 996px) {
   .heroBanner {

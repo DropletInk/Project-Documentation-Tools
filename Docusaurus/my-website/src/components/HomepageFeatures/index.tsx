@@ -11,32 +11,29 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Documentation Focused',
+    Svg: require('@site/static/img/undraw_contract_ynau.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Create and manage well-structured documentation with ease. Designed for developers and teams who want a fast, organized, and scalable documentation experience.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Documnent Search',
+    Svg: require('@site/static/img/undraw_document-search_2o7x.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Quickly find the information you need with powerful and intelligent search capabilities that make navigating large documentation effortless.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Document Analysis',
+    Svg: require('@site/static/img/undraw_document-analysis_3c0y.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Analyze, customize, and extend your documentation platform with flexible components and modern tools for a smarter user experience.
       </>
     ),
   },
@@ -44,7 +41,7 @@ const FeatureList: FeatureItem[] = [
 
 function Feature({title, Svg, description}: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx('col col--4 gap--md ')}>
       <div className="text--center">
         <Svg className={styles.featureSvg} role="img" />
       </div>
